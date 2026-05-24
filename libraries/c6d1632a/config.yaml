@@ -1,0 +1,29 @@
+course:
+  university: XX大学
+  major: 计算机网络
+  course_name: ____
+  professor: ''
+quiz:
+  source_filter: ''
+  max_question_number: null
+  match_threshold: 0.45
+  rebuild_on_start: false
+  use_pdf_colors: true
+paths:
+  data_dir: data
+  index_dir: knowledge_base
+embedding:
+  model: BAAI/bge-small-zh-v1.5
+  device: cpu
+  batch_size: 32
+chunking:
+  chunk_size: 500
+  chunk_overlap: 80
+retrieval:
+  top_k: 6
+  score_threshold: 0.35
+ollama:
+  base_url: http://127.0.0.1:11434
+  model: qwen2.5:3b
+  temperature: 0.3
+  num_predict: 1024

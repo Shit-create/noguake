@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+venv/
+build/
+dist/
+release/
+logs/
+.codegraph/
+*.spec
+*.exe
+installer/Output/

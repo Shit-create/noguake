@@ -1,0 +1,37 @@
+# 校园专属课程 RAG 配置 — 按需修改
+
+course:
+  university: "XX大学"
+  major: "计算机网络"
+  course_name: "CCNA 3 期末题库"
+  professor: ""
+
+quiz:
+  source_filter: "CCNA 3"           # 只解析该 PDF（212 道期末题）
+  max_question_number: 212
+  match_threshold: 0.45             # 题目向量匹配最低相似度
+  rebuild_on_start: false           # true=每次启动重新解析 PDF 红色答案
+  use_pdf_colors: true              # 全卷按 PDF 红色(#FF0000)识别正确答案
+
+paths:
+  data_dir: "data"              # 把 PPT/PDF/题库 放这里
+  index_dir: "knowledge_base"   # 自动生成的索引
+
+embedding:
+  model: "BAAI/bge-small-zh-v1.5"  # 轻量中文向量，约 100MB
+  device: "cpu"                     # 有 NVIDIA 显卡可改为 cuda
+  batch_size: 32
+
+chunking:
+  chunk_size: 500      # 字符数，中文约 250 字
+  chunk_overlap: 80
+
+retrieval:
+  top_k: 6
+  score_threshold: 0.35
+
+ollama:
+  base_url: "http://127.0.0.1:11434"
+  model: "qwen2.5:3b"
+  temperature: 0.3
+  num_predict: 1024
