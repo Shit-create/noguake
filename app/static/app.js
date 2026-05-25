@@ -1,3 +1,35 @@
+// ===== 激活检查 =====
+async function checkLicenseGate() {
+  try {
+    const r = await fetch("/api/license/status");
+    const s = await r.json();
+    if (!s.licensed && !s.trial) {
+      window.location.href = "/static/activate.html";
+      return false;
+    }
+    // 显示剩余天数提示
+    if (s.trial && s.days_left <= 3) {
+      setTimeout(() => {
+        const banner = document.createElement("div");
+        banner.style.cssText = "background:#fef3c7;color:#92400e;padding:8px 16px;text-align:center;font-size:0.85rem;border-bottom:1px solid #fcd34d";
+        banner.innerHTML = `试用期还剩 <strong>${s.days_left}</strong> 天，<a href="/static/activate.html" style="color:#b45309">点击激活</a>`;
+        document.querySelector(".app")?.prepend(banner);
+      }, 500);
+    }
+    return true;
+  } catch(e) {
+    console.error("License check failed:", e);
+    return true; // 网络错误放行
+  }
+}
+
+// 在 DOM ready 时检查
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", checkLicenseGate);
+} else {
+  checkLicenseGate();
+}
+
 const API = "/api";
 let currentLibId = localStorage.getItem("currentLibId") || null;
 let batchMode = false;
@@ -13,6 +45,27 @@ async function api(path, opts = {}) {
     throw new Error(msg || res.statusText);
   }
   return data;
+}
+
+
+function showLoading(btn, text) {
+  btn.disabled = true;
+  btn.dataset.origText = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span>' + text;
+}
+
+function hideLoading(btn) {
+  btn.disabled = false;
+  btn.textContent = btn.dataset.origText || btn.textContent;
+}
+
+function showToast(msg, ok = true) {
+  const t = document.createElement("div");
+  t.className = "toast " + (ok ? "toast-ok" : "toast-bad");
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity 0.3s"; }, 3000);
+  setTimeout(() => t.remove(), 3300);
 }
 
 function formatSize(n) {
@@ -104,6 +157,7 @@ async function createLibrary() {
 }
 
 async function deleteLibrary(id) {
+  if (!confirm("确定要删除该题库？\n此操作不可恢复！")) return;
   if (!confirm("确定删除该题库及全部文件？")) return;
   await api(`/libraries/${id}`, { method: "DELETE" });
   if (currentLibId === id) {
@@ -135,6 +189,7 @@ async function uploadFiles(fileList) {
 }
 
 async function removeFile(name) {
+  if (!confirm(`确定要删除文件 "${name}"？`)) return;
   await api(`/libraries/${currentLibId}/files/${encodeURIComponent(name)}`, {
     method: "DELETE",
   });

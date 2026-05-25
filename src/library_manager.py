@@ -63,7 +63,7 @@ class LibraryManager:
         return self._read_meta(path)
 
     def create_library(self, name: str, course_name: str = "") -> dict[str, Any]:
-        lib_id = str(uuid.uuid4())[:8]
+        lib_id = str(uuid.uuid4())[:12]  # 12 chars for lower collision risk
         path = self.root / lib_id
         path.mkdir(parents=True)
         (path / "data").mkdir()
