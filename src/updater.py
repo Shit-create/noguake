@@ -15,7 +15,7 @@ import requests
 from assets.build_meta import APP_VERSION
 
 # GitHub 仓库信息（打包时替换为你的仓库）
-UPDATE_REPO = "your-username/noguake"
+UPDATE_REPO = "Shit-create/noguake"
 UPDATE_CHECK_URL = f"https://api.github.com/repos/{UPDATE_REPO}/releases/latest"
 
 # 检查间隔（秒），默认 24 小时

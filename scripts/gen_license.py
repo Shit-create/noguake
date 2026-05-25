@@ -100,7 +100,7 @@ def generate_license(
 
 def main():
     parser = argparse.ArgumentParser(description="不挂科神器 - 激活码生成器")
-    parser.add_argument("--machine-id", "-m", required=True, 
+    parser.add_argument("--machine-id", "-m",
                         help="客户机器 ID（64 位十六进制）")
     parser.add_argument("--days", "-d", type=int, default=365,
                         help="有效期天数（默认 365，0=永久）")
@@ -118,7 +118,10 @@ def main():
     if args.new_keypair:
         _new_keypair()
         return
-    
+
+    if not args.machine_id:
+        parser.error("--machine-id is required (unless using --new-keypair)")
+
     # 验证 machine_id
     mid = args.machine_id.strip().lower()
     if len(mid) != 64 or not all(c in "0123456789abcdef" for c in mid):
